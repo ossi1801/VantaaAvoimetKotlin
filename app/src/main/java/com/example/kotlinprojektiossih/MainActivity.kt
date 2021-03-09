@@ -14,7 +14,19 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
+
+/**
+Created by ossi1801 (Ossi H) on 7/3/2021.
+App that lets you search for available jobs in the Vantaa city area.
+Uses retrofit library
+
+IMPORTANT -------------> The JSON is not maintained regularly by Vantaa, so a lot of jobs are in "HAKU ON PÄÄTTYNYT" state
+-----------> In this case use different keyword for a job that has jobs available example:  http://prntscr.com/10hf0yu
+ */
 
 class MainActivity : AppCompatActivity() {
     private val  formattedlist = initializeListView()
@@ -36,9 +48,7 @@ class MainActivity : AppCompatActivity() {
     }
     /*TODO Fix Search bar  limits  (or do radiobuttonlist)
     * Clikable list
-    * Show date correctly copy paste from from previous project
     * Format list better or stmh  xml
-    * Change example item name
     */
 
 
@@ -48,13 +58,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun removeItem(view: View) {}
+
     private fun initializeListView(): ArrayList<RecycleItem> {
         val list = ArrayList<RecycleItem>()
             val item = RecycleItem( "", "", "")
             list += item
         return list
     }
-
 
     fun getCurrentData(hakusana: String) {
         var hakusana = hakusana
@@ -75,8 +85,15 @@ class MainActivity : AppCompatActivity() {
                    var tallennettuobj = response.body()!!
                     var maxNro =  tallennettuobj.size-1
                   //  if (isSearchFirstTime == false) { } //poistaa vanhan haun datan
+                    val sdf = SimpleDateFormat("yyyy-M-dd")
                     for (i in 0 until maxNro) {
-                        val item = RecycleItem( tallennettuobj[i].tyotehtava.toString(), "id $i",tallennettuobj[i].haku_paattyy_pvm.toString())
+                        val item: RecycleItem
+                        if (Date().after(sdf.parse(tallennettuobj[i].haku_paattyy_pvm))) { // If current date after job ending date
+                             item = RecycleItem(tallennettuobj[i].tyotehtava.toString(), "id $i", "HAKU ON PÄÄTTYNYT")
+                        }
+                        else {
+                            item = RecycleItem(tallennettuobj[i].tyotehtava.toString(), "id $i", tallennettuobj[i].haku_paattyy_pvm.toString())
+                        }
                         formattedlist.add(i, item)
                         adapter.notifyItemInserted(i)
                     }

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.example_item.view.*
+import kotlinx.android.synthetic.main.recycle_item.view.*
 
 class RecycleAdapter(private val recycleList: List<RecycleItem>) :
     RecyclerView.Adapter<RecycleAdapter.ExampleViewHolder>() {
