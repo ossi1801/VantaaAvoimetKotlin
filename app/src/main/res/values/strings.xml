@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">KotlinProjekti</string>
+
+
+    <string-array name="tyopaikat_array">
+        <item>kaikki</item>
+        <item>Opetusala</item>
+        <item>Harjoittelu ja kesätyö</item>
+        <item>Kotihoito ja erityisasuminen</item>
+        <item>Terveyden- ja sairaanhoito</item>
+        <item>Hallinto-, esimies- ja asiantuntijatyö</item>
+        <item>Tekninen ala</item>
+        <item>Varhaiskasvatus</item>
+        <item>Sosiaaliala</item>
+        <item>Liikunta-, kirjasto-, kulttuuri- ja nuorisoala</item>
+        <item>Palo- ja pelastusala</item>
+    </string-array>
+
+</resources>
