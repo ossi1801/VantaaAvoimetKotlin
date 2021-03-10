@@ -1,11 +1,15 @@
 package com.example.kotlinprojektiossih
 
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,11 +32,14 @@ IMPORTANT -------------> The JSON is not maintained regularly by Vantaa, so a lo
 -----------> In this case use different keyword for a job that has jobs available example:  http://prntscr.com/10hf0yu
  */
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecycleAdapter.OnItemClickListener {
     private val  formattedlist = initializeListView()
-    private val adapter = RecycleAdapter(formattedlist)
+    private val adapter = RecycleAdapter(formattedlist, this)
     var textView: AutoCompleteTextView? = null  //auto complete function
-  //  var isSearchFirstTime: Boolean = true
+    var tallennettuobj: List<MyResponse>? = null
+    val sdf = SimpleDateFormat("yyyy-M-dd")
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         //------------------------------
     }
     /*TODO Fix Search bar  limits  (or do radiobuttonlist)
-    * Clikable list
     * Format list better or stmh  xml
     */
 
@@ -55,6 +61,26 @@ class MainActivity : AppCompatActivity() {
     fun haeData(view: View) {
         val haku = textView?.text.toString()
         getCurrentData(haku)
+    }
+
+    override fun onItemClick(position: Int) {
+        if (tallennettuobj.isNullOrEmpty()) return
+        if (Date().after(sdf.parse(tallennettuobj!![position].haku_paattyy_pvm))) { // If current date after job ending date
+            Toast.makeText(this, "HAKU ON PÄÄTTYNYT, \n EI LISÄTIETOJA", Toast.LENGTH_SHORT).show()
+        }
+        else{ var url =  tallennettuobj!![position].linkki.toString()
+            openNewTabWindow(url)
+        }
+    }
+
+    fun openNewTabWindow(urls: String) {
+        if (urls.isNullOrEmpty()) return
+        val uris = Uri.parse(urls)
+        val intents = Intent(Intent.ACTION_VIEW, uris)
+        val b = Bundle()
+        b.putBoolean("new_window", true)
+        intents.putExtras(b)
+        this@MainActivity.startActivity(intents)
     }
 
     fun removeItem(view: View) {}
@@ -81,23 +107,20 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<MyResponse>>, response: Response<List<MyResponse>>)  {
 
                 if (response.code() == 200) {
-                    clearData() //poistaa vanhan haun datan
-                   var tallennettuobj = response.body()!!
-                    var maxNro =  tallennettuobj.size-1
-                  //  if (isSearchFirstTime == false) { } //poistaa vanhan haun datan
-                    val sdf = SimpleDateFormat("yyyy-M-dd")
-                    for (i in 0 until maxNro) {
+                    clearData() //clears data object
+                    tallennettuobj = response.body()!!
+                    var maxNro = tallennettuobj?.size?.minus(1)
+                    for (i in 0 until maxNro!!) {
                         val item: RecycleItem
-                        if (Date().after(sdf.parse(tallennettuobj[i].haku_paattyy_pvm))) { // If current date after job ending date
-                             item = RecycleItem(tallennettuobj[i].tyotehtava.toString(), "id $i", "HAKU ON PÄÄTTYNYT")
+                        if (Date().after(sdf.parse(tallennettuobj!![i].haku_paattyy_pvm))) { // If current date after job ending date
+                             item = RecycleItem(tallennettuobj!![i].tyotehtava.toString(), "id $i", "HAKU ON PÄÄTTYNYT")
                         }
                         else {
-                            item = RecycleItem(tallennettuobj[i].tyotehtava.toString(), "id $i", tallennettuobj[i].haku_paattyy_pvm.toString())
+                            item = RecycleItem(tallennettuobj!![i].tyotehtava.toString(), "id $i", tallennettuobj!![i].haku_paattyy_pvm.toString())
                         }
                         formattedlist.add(i, item)
                         adapter.notifyItemInserted(i)
                     }
-                    //isSearchFirstTime = false
                 }
             }
             override fun onFailure(call: Call<List<MyResponse>>, t: Throwable) { Log.d("ERROR", t.message.toString()) }
