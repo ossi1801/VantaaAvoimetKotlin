@@ -27,24 +27,30 @@
         android:layout_alignParentBottom="true"
         android:clipToPadding="true"
         android:padding="4dp"
+        android:paddingBottom="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view">
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="172dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="haeData"
             android:text="Hae töitä" />
 
-        <Button
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/checkBox2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="removeItem"
-            android:text="Remove item" />
+            android:text="Näytä vanhentuneet työpaikat"
+            android:textSize="10dp"
+            android:onClick="setChecked"
+            android:checked="true"
+            />
+
 
     </LinearLayout>
 

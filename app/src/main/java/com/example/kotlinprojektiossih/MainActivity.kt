@@ -24,12 +24,19 @@ import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 /**
-Created by ossi1801 (Ossi H) on 7/3/2021.
+Created by ossi1801 (Ossi H)
 App that lets you search for available jobs in the Vantaa city area.
 Uses retrofit library
 
-IMPORTANT -------------> The JSON is not maintained regularly by Vantaa, so a lot of jobs are in "HAKU ON PÄÄTTYNYT" state
------------> In this case use different keyword for a job that has jobs available example:  http://prntscr.com/10hf0yu
+ IMPORTANT! ------------->  12/3/2021. The JSON is not maintained regularly by Vantaa, so a lot of jobs are in "HAKU ON PÄÄTTYNYT" state
+-----------> In this case use different keyword for a job title that has jobs available, or use the checkbox filter
+Example links (images):
+ Expired date:
+    http://prntscr.com/10j5w05
+    http://prntscr.com/10j5tdg
+ Working dates:
+    http://prntscr.com/10j5x4n
+    http://prntscr.com/10j5y30
  */
 
 class MainActivity : AppCompatActivity(), RecycleAdapter.OnItemClickListener {
@@ -38,7 +45,7 @@ class MainActivity : AppCompatActivity(), RecycleAdapter.OnItemClickListener {
     var textView: AutoCompleteTextView? = null  //auto complete function
     var tallennettuobj: List<MyResponse>? = null
     val sdf = SimpleDateFormat("yyyy-M-dd")
-
+    var isFilterToggled: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,9 +60,6 @@ class MainActivity : AppCompatActivity(), RecycleAdapter.OnItemClickListener {
         ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tyopaikat).also { adapter -> textView!!.setAdapter(adapter) }
         //------------------------------
     }
-    /*TODO Fix Search bar  limits  (or do radiobuttonlist)
-    * Format list better or stmh  xml
-    */
 
 
     fun haeData(view: View) {
@@ -63,8 +67,12 @@ class MainActivity : AppCompatActivity(), RecycleAdapter.OnItemClickListener {
         getCurrentData(haku)
     }
 
+
     override fun onItemClick(position: Int) {
         if (tallennettuobj.isNullOrEmpty()) return
+
+        var position = position
+        if (isFilterToggled) position = formattedlist[position].text2.toInt()
         if (Date().after(sdf.parse(tallennettuobj!![position].haku_paattyy_pvm))) { // If current date after job ending date
             Toast.makeText(this, "HAKU ON PÄÄTTYNYT, \n EI LISÄTIETOJA", Toast.LENGTH_SHORT).show()
         }
@@ -72,7 +80,6 @@ class MainActivity : AppCompatActivity(), RecycleAdapter.OnItemClickListener {
             openNewTabWindow(url)
         }
     }
-
     fun openNewTabWindow(urls: String) {
         if (urls.isNullOrEmpty()) return
         val uris = Uri.parse(urls)
@@ -83,7 +90,12 @@ class MainActivity : AppCompatActivity(), RecycleAdapter.OnItemClickListener {
         this@MainActivity.startActivity(intents)
     }
 
-    fun removeItem(view: View) {}
+    fun setChecked(view: View) {
+        if (isFilterToggled == false) isFilterToggled = true
+        else if (isFilterToggled == true) isFilterToggled = false
+        Log.d("isfiltered: ", isFilterToggled.toString())
+        haeData(view)
+    }
 
     private fun initializeListView(): ArrayList<RecycleItem> {
         val list = ArrayList<RecycleItem>()
@@ -112,13 +124,23 @@ class MainActivity : AppCompatActivity(), RecycleAdapter.OnItemClickListener {
                     var maxNro = tallennettuobj?.size?.minus(1)
                     for (i in 0 until maxNro!!) {
                         val item: RecycleItem
-                        if (Date().after(sdf.parse(tallennettuobj!![i].haku_paattyy_pvm))) { // If current date after job ending date
-                             item = RecycleItem(tallennettuobj!![i].tyotehtava.toString(), "id $i", "HAKU ON PÄÄTTYNYT")
+                        if(isFilterToggled ) {
+                            if (sdf.parse(tallennettuobj!![i].haku_paattyy_pvm).after(Date())) {
+                                var bI = 0
+                                item = RecycleItem(tallennettuobj!![i].tyotehtava.toString(), "$i", tallennettuobj!![i].haku_paattyy_pvm.toString())
+                                formattedlist.add(bI, item)
+                                bI++
+                            }
                         }
                         else {
-                            item = RecycleItem(tallennettuobj!![i].tyotehtava.toString(), "id $i", tallennettuobj!![i].haku_paattyy_pvm.toString())
+                            if (Date().after(sdf.parse(tallennettuobj!![i].haku_paattyy_pvm))) { // If current date after job ending date
+                                item = RecycleItem(tallennettuobj!![i].tyotehtava.toString(), "id $i", "HAKU ON PÄÄTTYNYT")
+                            }
+                            else {
+                                item = RecycleItem(tallennettuobj!![i].tyotehtava.toString(), "id $i", tallennettuobj!![i].haku_paattyy_pvm.toString())
+                            }
+                            formattedlist.add(i, item)
                         }
-                        formattedlist.add(i, item)
                         adapter.notifyItemInserted(i)
                     }
                 }
