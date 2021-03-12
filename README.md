@@ -33,6 +33,7 @@ Open project in android studio
 * [Vantaa avoimet REST](http://gis.vantaa.fi/rajapinnat/rest_tyopaikat.html) - REST API info
 * [RETROFIT](https://square.github.io/retrofit/) - Used to get json data from and parsing
 
+![listview_img](https://github.com/ossi1801/readme-images/blob/main/kotlinListView.jpg)
 
 
 
