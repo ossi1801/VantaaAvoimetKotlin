@@ -38,7 +38,7 @@ Requirements include android studio, some form of android device ( AVD or physic
 * [Vantaa avoimet REST](http://gis.vantaa.fi/rajapinnat/rest_tyopaikat.html) - REST API info
 * [RETROFIT](https://square.github.io/retrofit/) - Used to get json data from and parsing
 
-
+![recyclerview.jpg](https://github.com/ossi1801/readme-images/blob/main/kotlinrecyclerview.jpg)
 
 
 ## Authors
