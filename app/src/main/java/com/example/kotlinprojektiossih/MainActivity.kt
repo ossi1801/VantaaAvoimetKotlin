@@ -23,7 +23,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.random.Random
 
-/**
+/** IMPORTANT! README!
 Created by ossi1801 (Ossi H)
 App that lets you search for available jobs in the Vantaa city area.
 Uses retrofit library

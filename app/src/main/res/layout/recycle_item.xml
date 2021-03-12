@@ -45,6 +45,18 @@
             android:layout_toEndOf="@id/image_view"
             android:text="Line 3"
             android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/text_view_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_view_3"
+            android:paddingLeft="160dp"
+            android:layout_toEndOf="@id/image_view"
+            android:text="Lisätietoja"
+            android:textAllCaps="true"
+            android:textStyle="italic"
+            android:textColor="@color/teal_700"
+            android:textAlignment="center"/>
 
 
 
