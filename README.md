@@ -19,10 +19,10 @@ Requirements include android studio, some form of android device ( AVD or physic
 
 ### Using
 ```
-	implementation 'com.squareup.retrofit2:retrofit:2.8.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.8.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.8.0'
-    implementation "androidx.recyclerview:recyclerview:1.1.0"
-    implementation "androidx.cardview:cardview:1.0.0"
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
 ```
 
 
